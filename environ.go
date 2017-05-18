@@ -1,5 +1,9 @@
 package system 
 
+import (
+	"strings"
+)
+
 type Environ []string
 
 func (self *Environ) Add(env ...string) {
@@ -13,6 +17,20 @@ func (self Environ) ToMap() map[string]string {
 		env[a[0]] = a[1]
 	}
 	return env
+}
+
+func (self Environ) Get(key string) string {
+	for _, e := range self {
+		i := strings.Index(e, "=")
+		if key == e[:i] {
+			return e[:i]
+		}
+	}
+	return ""
+}
+
+func (self Environ) Has(key string) bool {
+	return self.Get(key) != ""
 }
 
 
