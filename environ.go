@@ -37,10 +37,10 @@ func (self Environ) Has(key string) bool {
 	return self.Get(key) != ""
 }
 
-var reg = regexp.MustCompile("\\$([a-zA-Z_]+)")
+var regu = regexp.MustCompile("\\$([a-zA-Z_]+)")
 
 func (self Environ) Expand(str string) string {
-	return reg.ReplaceAllStringFunc(str, func(str string) string {
+	return regu.ReplaceAllStringFunc(str, func(str string) string {
 		e := self.Get(str[1:])
 		if e == "" {
 			return str
