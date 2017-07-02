@@ -1,7 +1,11 @@
-package system 
+package system
 
 import (
+	"errors"
+	"regexp"
 	"strings"
+
+	multierror "github.com/hashicorp/go-multierror"
 )
 
 type Environ []string
@@ -33,6 +37,30 @@ func (self Environ) Has(key string) bool {
 	return self.Get(key) != ""
 }
 
+var reg = regexp.MustCompile("\\$([a-zA-Z_]+)")
+
+func (self Environ) Expand(str string) string {
+	return reg.ReplaceAllStringFunc(str, func(str string) string {
+		e := self.Get(str[1:])
+		if e == "" {
+			return str
+		}
+		return e
+	})
+}
+
+func (self Environ) TryExpand(str string) (string, error) {
+	var err error
+	str = reg.ReplaceAllStringFunc(str, func(str string) string {
+		e := self.Get(str[1:])
+		if e == "" {
+			err = multierror.Append(err, errors.New("could not expand "+str))
+		}
+		return e
+	})
+
+	return str, err
+}
 
 func MapToEnviron(m map[string]string) Environ {
 	var out Environ
