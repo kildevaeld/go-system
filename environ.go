@@ -27,7 +27,7 @@ func (self Environ) Get(key string) string {
 	for _, e := range self {
 		i := strings.Index(e, "=")
 		if key == e[:i] {
-			return e[:i]
+			return e[i+1:]
 		}
 	}
 	return ""
