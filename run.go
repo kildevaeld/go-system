@@ -23,7 +23,6 @@ func Run(fn func(kill <-chan struct{}) error) error {
 		done <- fn(kill)
 	}()
 
-	//return <-done
 	select {
 	case err := <-done:
 		return err
@@ -32,4 +31,6 @@ func Run(fn func(kill <-chan struct{}) error) error {
 		break
 	}
 	return nil
+
+
 }
