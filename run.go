@@ -6,7 +6,9 @@ import (
 	"syscall"
 )
 
-func Run(fn func(kill <-chan struct{}) error) error {
+type KillChannel <-chan struct{}
+
+func Run(fn func(kill KillChannel) error) error {
 
 	sigs := make(chan os.Signal, 1)
 	done := make(chan error, 1)
@@ -31,6 +33,5 @@ func Run(fn func(kill <-chan struct{}) error) error {
 		break
 	}
 	return nil
-
 
 }
